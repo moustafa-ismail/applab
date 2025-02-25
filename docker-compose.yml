@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+  chromadb:
+    image: ghcr.io/chroma-core/chroma:latest
+    restart: always
+    ports:
+      - "8000:8000"
+    volumes:
+      - chromadb_data:/chroma
+
+  rag-app:
+    build: 
+      context: ..
+      dockerfile: ../Dockerfile
+    volumes:
+      - .:/app
+    environment:
+      - CHROMADB_HOST=http://chromadb:8000
+    command: ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+    depends_on:
+      - chromadb
+    ports:
+      - "8501:8501"
+
+volumes:
+  chromadb_data:
