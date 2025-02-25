@@ -10,9 +10,7 @@ services:
       - chromadb_data:/chroma
 
   rag-app:
-    build: 
-      context: ..
-      dockerfile: ../Dockerfile
+    build: .
     volumes:
       - .:/app
     environment:
