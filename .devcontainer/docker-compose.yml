@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  devcontainer:
+    image: mcr.microsoft.com/devcontainers/universal:linux
+    volumes:
+      - ../..:/workspaces:cached
+    network_mode: service:chromadb
+    command: sleep infinity
+
+  chromadb:
+    image: chromadb/chroma
+    hostname: chromahost
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - chromadb-data:/var/lib/chromadb/data
+
+
+volumes:
+  chromadb-data:

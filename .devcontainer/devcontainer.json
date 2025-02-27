@@ -1,0 +1,7 @@
+{
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "devcontainer",
+    "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+    "forwardPorts": [8501, 8000],
+    "postCreateCommand": "pip install -r requirements.txt"
+}
