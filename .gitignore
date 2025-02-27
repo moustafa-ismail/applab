@@ -1,3 +1,4 @@
 *.pdf
 *.ipynb
 *.sqlite3
+*test.py
