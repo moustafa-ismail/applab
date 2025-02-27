@@ -2,3 +2,4 @@
 *.ipynb
 *.sqlite3
 *test.py
+streamlit_app_ignore.py

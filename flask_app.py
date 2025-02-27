@@ -16,6 +16,9 @@ from langchain_core.prompts import PromptTemplate
 from langchain_core.documents import Document
 from dotenv import load_dotenv
 import chromadb.utils.embedding_functions as embedding_functions
+from langchain.chains.retrieval import create_retrieval_chain
+from langchain.chains.combine_documents import create_stuff_documents_chain
+
 
 
 load_dotenv()
@@ -49,6 +52,18 @@ collection = chroma_client.get_or_create_collection(name="rag_docs",
                                                     embedding_function=mistral_ef
                                                     )
 
+# Ensure the collection is empty
+# Retrieve all document IDs
+all_docs = collection.get()
+all_ids = all_docs["ids"]  # Extract IDs
+
+if all_ids:
+    collection.delete(ids=all_ids)
+    print("✅ All documents deleted successfully!")
+else:
+    print("⚠️ No documents found in the collection.")
+
+    
 llm = ChatMistralAI(model="open-mistral-7b")
 vectorstore = Chroma(
     client = chroma_client,
@@ -56,7 +71,7 @@ vectorstore = Chroma(
     embedding_function = embeddings
 )
 
-retriever = vectorstore.as_retriever(search_kwargs={'k': 6})
+retriever = vectorstore.as_retriever(search_kwargs={'k': 3})
 
 @app.route("/upload/", methods=["POST"])
 def upload_file():
@@ -77,7 +92,7 @@ def upload_file():
         # Split text into chunks and store in ChromaDB
         text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
         chunks = text_splitter.split_text(text)
-        
+
         collection.add(ids=[f"{file.filename}_{i}" for i in range(len(chunks))], documents=chunks)
         
         return jsonify({"message": "File uploaded and processed!", "chunks": len(chunks)})
@@ -86,7 +101,11 @@ def upload_file():
 
 @app.route("/chat/", methods=["POST"])
 def chat():
-    query = request.form.get("query")
+    data = request.json
+    query = data.get("query", "")
+    use_document = data.get("use_document", True)
+
+    # query = request.form.get("query")
     if not query:
         return jsonify({"error": "No query provided"}), 400
 
@@ -132,7 +151,7 @@ def chat():
     if documents:
         response = chain_response["answer"]
     
-        # print(documents)
+        print(documents)
         return jsonify(
             {
                 "query": query,
