@@ -1,7 +1,7 @@
 import streamlit as st
 import requests
 
-API_URL = "http://127.0.0.1:8501"
+API_URL = "http://backend:8501"
 
 
 st.set_page_config(page_title="RAG Chatbot", layout="wide")

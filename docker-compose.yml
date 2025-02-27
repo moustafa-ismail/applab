@@ -1,0 +1,43 @@
+services:
+  flask:
+    build:
+      context: ./flask
+      dockerfile: Dockerfile
+
+    hostname: backend
+    ports:
+      - "8051:8051"
+    environment:
+      - FLASK_ENV=production
+    depends_on:
+      - chromadb
+    networks:
+      - app_network
+
+  streamlit:
+    build:
+      context: ./streamlit
+      dockerfile: Dockerfile
+    ports:
+      - "8088:8088"
+    depends_on:
+      - flask
+    networks:
+      - app_network
+
+  chromadb:
+    image: chromadb/chroma
+    hostname: chromahost
+    ports:
+      - "8000:8000"
+    volumes:
+      - chromadb_data:/chroma/chroma
+    networks:
+      - app_network
+
+volumes:
+  chromadb_data:
+
+networks:
+  app_network:
+    driver: bridge
