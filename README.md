@@ -18,16 +18,16 @@ This project implements a Retrieval-Augmented Generation (RAG) chatbot using Fla
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-repo/rag-chatbot.git
-   cd rag-chatbot
+   git clone [https://github.com/moustafa-ismail/applab.git](https://github.com/moustafa-ismail/applab.git)
+   cd applab
    ```
 2. Start the containers:
    ```bash
-   docker-compose up --build
+   docker-compose up --build -d
    ```
 3. Open Streamlit UI at:
    ```
-   http://localhost:8501
+   http://localhost:8088
    ```
 
 ## API Documentation
